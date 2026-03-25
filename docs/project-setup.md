@@ -359,6 +359,34 @@ python manage.py test
 ### 10. Required Project Wiring
 These files are essential for the infrastructure and global behaviors defined in `settings.py`.
 
+#### project/urls.py
+Global URL configuration featuring DRF router, root redirects, and static/media file serving.
+```python
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.generic import RedirectView
+from rest_framework import routers
+
+# Initialize DRF Router
+router = routers.DefaultRouter()
+
+urlpatterns = [
+    # Admin Interface
+    path("admin/", admin.site.urls),
+    
+    # Root Redirect to Admin
+    path("", RedirectView.as_view(url="/admin/"), name="home-redirect-admin"),
+    
+    # API Endpoints
+    path("api/", include(router.urls)),
+]
+
+# Serve Media Files in Development
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+```
+
 #### project/pagination.py
 Custom pagination logic for metadata-rich API responses.
 ```python
@@ -430,20 +458,6 @@ def custom_exception_handler(exc, context):
     return response
 ```
 
-#### project/templates/admin/base.html
-Overrides for the Django admin interface.
-```html
-{% extends "admin/base.html" %} {% load static %} {% block extrahead %}
-{{block.super }}
-<!-- Load markdown libraries -->
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"
-/>
-<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-{% endblock %}
-```
-
 ### 11. Optional Reusable Utilities
 Standalone helpers that can be imported by any app to extend functionality.
 
@@ -512,36 +526,7 @@ def get_test_image(image_name: str = "test.webp") -> SimpleUploadedFile:
 ```
 
 #### static/js/ Custom Scripts
-The project includes several dynamic scripts in `static/js/`. 
-
-> **Note:** Most of these scripts are designed for and will be utilized in a future integration with **django-unfold** to enhance the admin interface and functionality.
-
-**static/js/add_tailwind_styles.js**
-Adds Tailwind classes on load.
-```javascript
-// Insert talwind code to specific html elements
-
-// Run on load
-document.addEventListener("DOMContentLoaded", () => {
-  const classes = [
-    {
-      selector: ".btn",
-      classes: "bg-primary-600 block border border-transparent cursor-pointer font-medium px-3 py-2 rounded-default text-white w-full lg:w-auto flex items-center justify-center hover:bg-primary-700 hover:text-white transition-colors duration-300",
-    },
-    {
-      selector: ".img-preview",
-      classes: "w-auto h-16 rounded-xl object-cover",
-    },
-  ]
-  for (const elem_data of classes) {
-    const { selector, classes } = elem_data
-    const elems = document.querySelectorAll(selector)
-    elems.forEach((elem) => {
-      elem.classList.add(...classes.split(" "))
-    })
-  }
-})
-```
+The project includes several dynamic scripts in `static/js/`.
 
 **static/js/copy_clipboard.js**
 Utility for cookie-based clipboard operations.
@@ -565,68 +550,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.cookie = "copy_to_clipboard=; path=/; Max-Age=-99999999;"
     })
   }
-})
-```
-
-**static/js/load_markdown.js**
-SimpleMDE integration for text areas.
-```javascript
-// Runs script when page loads
-document.addEventListener("DOMContentLoaded", () => {
-  // Get text areas
-  const noMarkdownIds = [
-    "google_maps_src", // Property google maps src field
-    "description", // Post description field
-  ]
-  let textAreasSelector = 'div > textarea'
-  const notSelector = noMarkdownIds.map(id => `:not(#id_${id})`).join("")
-  textAreasSelector = `div > textarea${notSelector}`
-  const textAreas = document.querySelectorAll(textAreasSelector)
-  console.log({ textAreas })
-
-  setTimeout(() => {
-    textAreas.forEach(textArea => {
-      new SimpleMDE({
-        element: textArea,
-        toolbar: [
-          "bold", "italic", "heading", "|",
-          "quote", "code", "link", "image", "|",
-          "unordered-list", "ordered-list", "|",
-          "undo", "redo", "|",
-          "preview",
-        ],
-        spellChecker: false,
-      })
-    })
-  }, 100)
-})
-```
-
-**static/js/range_date_filter_es.js**
-Localization for date filters.
-```javascript
-// Update placeholder text for unfold range date filter
-
-// Run after page loads
-document.addEventListener("DOMContentLoaded", function () {
-  const texts = [
-    {
-      names: ["created_at_from", "updated_at_from"],
-      text: "Desde",
-    },
-    {
-      names: ["created_at_to", "updated_at_to"],
-      text: "Hasta",
-    },
-  ]
-
-  texts.forEach((text) => {
-    text.names.forEach((name) => {
-      const elem = document.querySelector(`[name="${name}"]`)
-      if (!elem) return
-      elem.placeholder = text.text
-    })
-  })
 })
 ```
 

@@ -36,9 +36,17 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
+from django.templatetags.static import static
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+
 # Application definition
 
 INSTALLED_APPS = [
+    "unfold",
+    "unfold.contrib.filters",
+    "unfold.contrib.forms",
+    "unfold.contrib.inlines",
     # Local apps
     "cv",
     "portfolio",
@@ -262,3 +270,76 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL") == "True"
 EMAIL_FROM = EMAIL_HOST_USER
 EMAILS_LEADS_NOTIFICATIONS = os.getenv("EMAILS_LEADS_NOTIFICATIONS", "").split(",")
+
+# Django Unfold Configuration
+UNFOLD = {
+    "SITE_TITLE": "Omar Dashboard",
+    "SITE_HEADER": "Omar Admin",
+    "SITE_SUBHEADER": "Omar Dashboard",
+    "SITE_URL": "/",
+    "SITE_ICON": lambda request: static("favicon.png"),
+    "SITE_LOGO": lambda request: static("logo.svg"),
+    "SITE_SYMBOL": "directions_car",
+    "SITE_FAVICONS": [
+        {
+            "rel": "icon",
+            "sizes": "32x32",
+            "type": "image/png",
+            "href": lambda request: static("favicon.png"),
+        },
+    ],
+    "SHOW_HISTORY": True,
+    "SHOW_VIEW_ON_SITE": True,
+    "ENVIRONMENT": "utils.callbacks.environment_callback",
+    "THEME": "light",
+    "COLORS": {
+        "primary": {
+            "50": "oklch(0.97 0.01 255)",
+            "100": "oklch(0.92 0.03 255)",
+            "200": "oklch(0.85 0.05 255)",
+            "300": "oklch(0.75 0.07 255)",
+            "400": "oklch(0.65 0.08 255)",
+            "500": "oklch(0.48 0.08 255)",
+            "600": "oklch(0.40 0.07 255)",
+            "700": "oklch(0.32 0.06 255)",
+            "800": "oklch(0.25 0.05 255)",
+            "900": "oklch(0.18 0.04 255)",
+            "950": "oklch(0.12 0.03 255)",
+        },
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": _("Autenticación"),
+                "separator": True,
+                "collapsible": False,
+                "items": [
+                    {
+                        "title": _("Usuarios"),
+                        "icon": "person",
+                        "link": reverse_lazy("admin:auth_user_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": _("Portafolio"),
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Experiencia"),
+                        "icon": "work",
+                        "link": reverse_lazy("admin:cv_experience_changelist"),
+                    },
+                    {
+                        "title": _("Proyectos"),
+                        "icon": "code",
+                        "link": reverse_lazy("admin:portfolio_project_changelist"),
+                    },
+                ],
+            },
+        ],
+    },
+}
