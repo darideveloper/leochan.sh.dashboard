@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     # Local apps
     "cv",
     "portfolio",
+    "shared",
 
     # Third-party apps
     "corsheaders",
