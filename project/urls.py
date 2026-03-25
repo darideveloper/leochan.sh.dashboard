@@ -13,7 +13,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     
     # Root Redirect to Admin
-    path("", RedirectView.as_view(url="/admin/"), name="home-redirect-admin"),
+    path("", RedirectView.as_view(url="/admin/portfolio/project/"), name="home-redirect-admin"),
     
     # API Endpoints
     path("api/", include(router.urls)),
