@@ -1,0 +1,349 @@
+[
+{
+    "model": "cv.profile",
+    "pk": 1,
+    "fields": {
+        "name": "LÉONARD-ANTON LLOSA",
+        "role": "Future Network & Security Engineer",
+        "email": "leonard@nekocorp.fr",
+        "phone": "+33 6 62 38 65 96",
+        "linkedin": "https://www.linkedin.com/in/leonard-anton-llosa/",
+        "driving_license": "Category B - Vehicle Owner",
+        "about_me": "Passionate about complex systems, from IT to aeronautics, I maintain a dual requirement for technical proficiency and security. My background in the BUT R&T, combined with my field experience at TotalEnergies, has enabled me to master the challenges of network deployment and automation using Ansible and Docker. As a student pilot accustomed to strict procedures, I am aiming for an engineering degree to tackle the ever-evolving challenges of cybersecurity."
+    }
+},
+{
+    "model": "cv.aeronauticalskill",
+    "pk": 3,
+    "fields": {
+        "profile": 1,
+        "name": "Aircraft Piloting: 20h flight time (+50h on simulator) on Robin DR400",
+        "order": 0
+    }
+},
+{
+    "model": "cv.aeronauticalskill",
+    "pk": 4,
+    "fields": {
+        "profile": 1,
+        "name": "LAPL Student Pilot",
+        "order": 1
+    }
+},
+{
+    "model": "cv.aeronauticalskill",
+    "pk": 5,
+    "fields": {
+        "profile": 1,
+        "name": "Professional Simulator: Airbus A320",
+        "order": 2
+    }
+},
+{
+    "model": "cv.interest",
+    "pk": 1,
+    "fields": {
+        "profile": 1,
+        "name": "Server, endpoint, and network management",
+        "order": 0
+    }
+},
+{
+    "model": "cv.interest",
+    "pk": 2,
+    "fields": {
+        "profile": 1,
+        "name": "PC Gaming",
+        "order": 1
+    }
+},
+{
+    "model": "cv.interest",
+    "pk": 3,
+    "fields": {
+        "profile": 1,
+        "name": "Automobiles & Driving",
+        "order": 2
+    }
+},
+{
+    "model": "cv.interest",
+    "pk": 4,
+    "fields": {
+        "profile": 1,
+        "name": "Aviation",
+        "order": 3
+    }
+},
+{
+    "model": "cv.interest",
+    "pk": 5,
+    "fields": {
+        "profile": 1,
+        "name": "Automotive electronics and mechanics",
+        "order": 4
+    }
+},
+{
+    "model": "cv.interest",
+    "pk": 6,
+    "fields": {
+        "profile": 1,
+        "name": "Video Editing (Adobe Premiere Pro)",
+        "order": 5
+    }
+},
+{
+    "model": "cv.skillcategory",
+    "pk": 1,
+    "fields": {
+        "profile": 1,
+        "name": "SYSTEMS & DEVSECOPS",
+        "order": 0
+    }
+},
+{
+    "model": "cv.skillcategory",
+    "pk": 2,
+    "fields": {
+        "profile": 1,
+        "name": "NETWORKS & CYBERSECURITY",
+        "order": 1
+    }
+},
+{
+    "model": "cv.skillcategory",
+    "pk": 3,
+    "fields": {
+        "profile": 1,
+        "name": "DEVELOPMENT & SCRIPTING",
+        "order": 2
+    }
+},
+{
+    "model": "cv.skill",
+    "pk": 1,
+    "fields": {
+        "category": 1,
+        "name": "Virtualization/Containers",
+        "details": "Docker (Standalone, Portainer), KVM, Kasm Workspaces (Zero Trust)",
+        "order": 0
+    }
+},
+{
+    "model": "cv.skill",
+    "pk": 2,
+    "fields": {
+        "category": 1,
+        "name": "Automation",
+        "details": "Ansible, n8n (Industrial environment)",
+        "order": 1
+    }
+},
+{
+    "model": "cv.skill",
+    "pk": 3,
+    "fields": {
+        "category": 1,
+        "name": "Services",
+        "details": "Apache 2, Bind (DNS), Redis",
+        "order": 2
+    }
+},
+{
+    "model": "cv.skill",
+    "pk": 4,
+    "fields": {
+        "category": 1,
+        "name": "OS",
+        "details": "Linux (Debian/RHEL), Windows 10/11, macOS",
+        "order": 3
+    }
+},
+{
+    "model": "cv.skill",
+    "pk": 5,
+    "fields": {
+        "category": 2,
+        "name": "Security",
+        "details": "SSO (Authentik, Cisco DUO), LDAP, WAF (Cloudflare/SafeLine)",
+        "order": 0
+    }
+},
+{
+    "model": "cv.skill",
+    "pk": 6,
+    "fields": {
+        "category": 2,
+        "name": "Infrastructure",
+        "details": "Hardware deployment (Cisco, UniFi), ToIP (3CX PBX)",
+        "order": 1
+    }
+},
+{
+    "model": "cv.skill",
+    "pk": 7,
+    "fields": {
+        "category": 2,
+        "name": "Databases",
+        "details": "MariaDB, PostgreSQL",
+        "order": 2
+    }
+},
+{
+    "model": "cv.skill",
+    "pk": 8,
+    "fields": {
+        "category": 3,
+        "name": "Languages",
+        "details": "Python, PHP, HTML5/CSS3",
+        "order": 0
+    }
+},
+{
+    "model": "cv.skill",
+    "pk": 9,
+    "fields": {
+        "category": 3,
+        "name": "Scripting",
+        "details": "Bash (Linux), Batch/PowerShell (Windows)",
+        "order": 1
+    }
+},
+{
+    "model": "cv.experience",
+    "pk": 1,
+    "fields": {
+        "profile": 1,
+        "date_range": "10/2025 – 08/2026",
+        "company": "TOTALENERGIES (TGITS) PAU",
+        "role": "IT Process Automation Engineer",
+        "order": 0
+    }
+},
+{
+    "model": "cv.experience",
+    "pk": 2,
+    "fields": {
+        "profile": 1,
+        "date_range": "04/2025 – 06/2025",
+        "company": "TOTALENERGIES (TGITS) PAU",
+        "role": "IT Process Automation Engineer",
+        "order": 1
+    }
+},
+{
+    "model": "cv.education",
+    "pk": 3,
+    "fields": {
+        "profile": 1,
+        "date_range": "02/2024 – 06/2026",
+        "institution": "IUT MONT DE MARSAN",
+        "details": "09/2025 – 06/2026: 3rd Year BUT R&T specialized in Cybersecurity\n09/2024 – 06/2025: 2nd Year BUT R&T specialized in Cybersecurity\n02/2024 – 06/2024: 1st Year BUT R&T",
+        "order": 0
+    }
+},
+{
+    "model": "cv.education",
+    "pk": 4,
+    "fields": {
+        "profile": 1,
+        "date_range": "09/2023 – 01/2024",
+        "institution": "CPGE ALBI",
+        "details": "1st Year Preparatory Class (TSI)",
+        "order": 1
+    }
+},
+{
+    "model": "cv.education",
+    "pk": 5,
+    "fields": {
+        "profile": 1,
+        "date_range": "2022 – 2023",
+        "institution": "LYCÉE SAINT CRICQ PAU",
+        "details": "Baccalauréat STI2D specialized in Information Systems & Digital",
+        "order": 2
+    }
+},
+{
+    "model": "cv.language",
+    "pk": 1,
+    "fields": {
+        "profile": 1,
+        "name": "French",
+        "level": "Native",
+        "order": 0
+    }
+},
+{
+    "model": "cv.language",
+    "pk": 2,
+    "fields": {
+        "profile": 1,
+        "name": "English",
+        "level": "TOEIC 940 (Full linguistic proficiency)",
+        "order": 1
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$kX4hbGgTSZax1Ddc9LntYf$xviBWyu0sAT0Wkzf4E2OXaL3sfqMzDOpgpj9L6Pmm3o=",
+        "last_login": "2026-03-25T09:30:11.416Z",
+        "is_superuser": true,
+        "username": "daridev-leochan",
+        "first_name": "",
+        "last_name": "",
+        "email": "darideveloper@gmail.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2026-03-25T09:29:39.276Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "48vifnva82ramcgf9l1b3ck2okk6bwnp",
+    "fields": {
+        "session_data": ".eJxVjMsOwiAQRf-FtSEDdHi4dO83EGBAqgaS0q6M_65NutDtPefcF_NhW6vfRl78TOzMBDv9bjGkR247oHtot85Tb-syR74r_KCDXzvl5-Vw_w5qGPVbG3IEQlthio0ZUBCZlAwECQG1E1LJQk6hRYHWoUwKJ6NMgaglFD2x9wfDnjaJ:1w5KZ1:PHTgJwI65B7WUxUR1ZrxFLnBFH74mpgw9ps0XSqr_U0",
+        "expire_date": "2026-04-08T09:30:11.418Z"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+        "action_time": "2026-03-25T11:13:31.227Z",
+        "user": [
+            "daridev-leochan"
+        ],
+        "content_type": [
+            "cv",
+            "profile"
+        ],
+        "object_id": "1",
+        "object_repr": "CV Profile",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Name\", \"Role\", \"Email\", \"Phone\", \"Linkedin\", \"Driving license\", \"About me\"]}}, {\"added\": {\"name\": \"Aeronautical Skill\", \"object\": \"test\"}}, {\"added\": {\"name\": \"Aeronautical Skill\", \"object\": \"test2\"}}, {\"added\": {\"name\": \"education\", \"object\": \"a (a)\"}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+        "action_time": "2026-03-25T11:35:04.444Z",
+        "user": [
+            "daridev-leochan"
+        ],
+        "content_type": [
+            "cv",
+            "profile"
+        ],
+        "object_id": "1",
+        "object_repr": "CV Profile",
+        "action_flag": 2,
+        "change_message": "[{\"added\": {\"name\": \"education\", \"object\": \"tesd (02/2024 \\u2013 06/2026)\"}}, {\"changed\": {\"name\": \"education\", \"object\": \"a (a)\", \"fields\": [\"Details\"]}}]"
+    }
+}
+]
