@@ -34,6 +34,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+HOST = os.getenv("HOST", "http://localhost:8000")
 
 
 from django.templatetags.static import static
