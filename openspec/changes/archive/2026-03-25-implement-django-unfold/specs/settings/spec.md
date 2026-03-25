@@ -9,6 +9,7 @@ Given the `django-unfold` library is installed
 When `settings.py` is initialized
 Then `unfold`, `unfold.contrib.filters`, `unfold.contrib.forms`, and `unfold.contrib.inlines` SHOULD be included in `INSTALLED_APPS` **before** `django.contrib.admin`.
 
+## ADDED Requirements
 ### Requirement: Admin Customization Settings
 The project MUST define an `UNFOLD` dictionary for admin UI customization.
 
