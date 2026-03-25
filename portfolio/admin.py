@@ -4,9 +4,8 @@ from .models import Technology, Project
 
 @admin.register(Technology)
 class TechnologyAdmin(ModelAdmin):
-    list_display = ["name", "slug"]
+    list_display = ["name"]
     search_fields = ["name"]
-    prepopulated_fields = {"slug": ("name",)}
 
 @admin.register(Project)
 class ProjectAdmin(ModelAdmin):

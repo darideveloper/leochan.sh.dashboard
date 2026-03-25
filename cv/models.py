@@ -9,14 +9,35 @@ class Profile(SingletonModel):
     linkedin = models.URLField()
     driving_license = models.CharField(max_length=255)
     about_me = models.TextField()
-    aeronautical_skills = models.JSONField(default=list, blank=True)
-    interests = models.JSONField(default=list, blank=True)
 
     def __str__(self):
         return "CV Profile"
 
     class Meta:
         verbose_name = "CV Profile"
+
+class AeronauticalSkill(models.Model):
+    profile = models.ForeignKey(Profile, related_name="aeronautical_skills", on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order"]
+        verbose_name = "Aeronautical Skill"
+
+    def __str__(self):
+        return self.name
+
+class Interest(models.Model):
+    profile = models.ForeignKey(Profile, related_name="interests", on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return self.name
 
 class SkillCategory(models.Model):
     profile = models.ForeignKey(Profile, related_name="skill_categories", on_delete=models.CASCADE)

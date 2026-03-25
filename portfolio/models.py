@@ -1,8 +1,7 @@
 from django.db import models
 
 class Technology(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True)
+    name = models.CharField(max_length=255, unique=True)
 
     class Meta:
         verbose_name_plural = "Technologies"

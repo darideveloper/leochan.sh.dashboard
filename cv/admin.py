@@ -1,11 +1,46 @@
 from django.contrib import admin
 from solo.admin import SingletonModelAdmin
-from unfold.admin import ModelAdmin, TabularInline
-from .models import Profile, SkillCategory, Skill, Experience, Education, Language
+from unfold.admin import ModelAdmin, TabularInline, StackedInline
+from .models import (
+    Profile, 
+    SkillCategory, 
+    Skill, 
+    Experience, 
+    Education, 
+    Language,
+    AeronauticalSkill,
+    Interest
+)
+
+class AeronauticalSkillInline(TabularInline):
+    model = AeronauticalSkill
+    extra = 1
+
+class InterestInline(TabularInline):
+    model = Interest
+    extra = 1
+
+class LanguageInline(TabularInline):
+    model = Language
+    extra = 1
+
+class ExperienceInline(TabularInline):
+    model = Experience
+    extra = 1
+
+class EducationInline(StackedInline):
+    model = Education
+    extra = 1
 
 @admin.register(Profile)
 class ProfileAdmin(SingletonModelAdmin, ModelAdmin):
-    pass
+    inlines = [
+        AeronauticalSkillInline, 
+        InterestInline, 
+        LanguageInline,
+        ExperienceInline,
+        EducationInline
+    ]
 
 class SkillInline(TabularInline):
     model = Skill
@@ -15,19 +50,3 @@ class SkillInline(TabularInline):
 class SkillCategoryAdmin(ModelAdmin):
     list_display = ["name", "order"]
     inlines = [SkillInline]
-
-@admin.register(Experience)
-class ExperienceAdmin(ModelAdmin):
-    list_display = ["role", "company", "date_range", "order"]
-    search_fields = ["role", "company"]
-    list_filter = ["company"]
-
-@admin.register(Education)
-class EducationAdmin(ModelAdmin):
-    list_display = ["institution", "date_range", "order"]
-    search_fields = ["institution"]
-
-@admin.register(Language)
-class LanguageAdmin(ModelAdmin):
-    list_display = ["name", "level", "order"]
-    search_fields = ["name"]

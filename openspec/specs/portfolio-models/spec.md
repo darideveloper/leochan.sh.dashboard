@@ -8,7 +8,7 @@ The system SHALL maintain a reusable list of technologies for tagging projects.
 
 #### Scenario: Define Technology Model
 - Model name: `Technology`.
-- Fields: `name` (Char), `slug` (Slug).
+- Fields: `name` (Char, unique).
 
 ### Requirement: Detailed Project Portfolio
 The system SHALL store project information for showcase purposes.
