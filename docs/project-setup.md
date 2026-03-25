@@ -290,7 +290,74 @@ else:
     }
 ```
 
-### 8. Project Assets & Customizations
+### 8. Security, API & Email Configuration
+Finalize the configuration with security headers, DRF defaults, and SMTP settings.
+
+> **Note:** Prompt the user to confirm if the project needs to send emails. If emails are not required, skip the **Email SMTP Configuration** subsection below and the corresponding environment variables in Step 5.
+
+**CORS & CSRF Configuration:**
+```python
+cors_allowed = os.getenv("CORS_ALLOWED_ORIGINS")
+if cors_allowed and cors_allowed != "None":
+    CORS_ALLOWED_ORIGINS = [
+        origin.strip().rstrip("/") for origin in cors_allowed.split(",") if origin.strip()
+    ]
+
+csrf_trusted = os.getenv("CSRF_TRUSTED_ORIGINS")
+if csrf_trusted and csrf_trusted != "None":
+    CSRF_TRUSTED_ORIGINS = [
+        origin.strip().rstrip("/") for origin in csrf_trusted.split(",") if origin.strip()
+    ]
+```
+
+**Django REST Framework Setup:**
+```python
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PAGINATION_CLASS": "project.pagination.CustomPageNumberPagination",
+    "PAGE_SIZE": 12,
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
+}
+```
+
+**Global DateTime Formatting:**
+
+```python
+DATE_FORMAT = "d/b/Y"
+TIME_FORMAT = "H:i"
+DATETIME_FORMAT = f"{DATE_FORMAT} {TIME_FORMAT}"
+```
+
+**Email SMTP Configuration:**
+> **Note:** Skip this subsection if the project does not require email functionality.
+
+```python
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
+EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL") == "True"
+EMAIL_FROM = EMAIL_HOST_USER
+EMAILS_NOTIFICATIONS = os.getenv("EMAILS_LEADS_NOTIFICATIONS", "").split(",")
+```
+
+### 9. Validation
+Verify the project configuration and ensure that the test environment is correctly isolated.
+
+```bash
+# Verify the complete configuration
+python manage.py check
+
+# Run tests to ensure test-specific database isolation
+python manage.py test
+```
+
+### 10. Project Assets & Customizations
 Create the following directories and files to support cloud storage, admin overrides, and styling.
 
 #### project/pagination.py
@@ -477,75 +544,9 @@ General-purpose JavaScript logic (empty by default).
 
 #### Other Required Files
 - **static/css/style.css**: Create an empty file for custom CSS.
-- **static/logo.svg** and **static/favicon.png**: Add your project's logo and favicon.
+- **static/logo.svg** and **static/favicon.png**: Add your project's logo and favicon. 
+  > **Note:** Prompt the user to check if they have specific logo and favicon files to use, or if they would like to create placeholders or new ones now.
 - **media/**: Create an empty directory in the root for local file uploads.
-
-### 9. Security, API & Email Configuration
-Finalize the configuration with security headers, DRF defaults, and SMTP settings.
-
-> **Note:** Prompt the user to confirm if the project needs to send emails. If emails are not required, skip the **Email SMTP Configuration** subsection below and the corresponding environment variables in Step 5.
-
-**CORS & CSRF Configuration:**
-```python
-cors_allowed = os.getenv("CORS_ALLOWED_ORIGINS")
-if cors_allowed and cors_allowed != "None":
-    CORS_ALLOWED_ORIGINS = [
-        origin.strip().rstrip("/") for origin in cors_allowed.split(",") if origin.strip()
-    ]
-
-csrf_trusted = os.getenv("CSRF_TRUSTED_ORIGINS")
-if csrf_trusted and csrf_trusted != "None":
-    CSRF_TRUSTED_ORIGINS = [
-        origin.strip().rstrip("/") for origin in csrf_trusted.split(",") if origin.strip()
-    ]
-```
-
-**Django REST Framework Setup:**
-```python
-REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
-    "DEFAULT_PAGINATION_CLASS": "project.pagination.CustomPageNumberPagination",
-    "PAGE_SIZE": 12,
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.TokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-    ),
-}
-```
-
-**Global DateTime Formatting:**
-
-```python
-DATE_FORMAT = "d/b/Y"
-TIME_FORMAT = "H:i"
-DATETIME_FORMAT = f"{DATE_FORMAT} {TIME_FORMAT}"
-```
-
-**Email SMTP Configuration:**
-> **Note:** Skip this subsection if the project does not require email functionality.
-
-```python
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = os.getenv("EMAIL_PORT")
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
-EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL") == "True"
-EMAIL_FROM = EMAIL_HOST_USER
-EMAILS_NOTIFICATIONS = os.getenv("EMAILS_LEADS_NOTIFICATIONS", "").split(",")
-```
-
-### 10. Validation
-Verify the project configuration and ensure that the test environment is correctly isolated.
-
-```bash
-# Verify the complete configuration
-python manage.py check
-
-# Run tests to ensure test-specific database isolation
-python manage.py test
-```
 
 ### 11. OpenSpec Setup (Gemini CLI)
 Initialize and configure OpenSpec to manage project context and change proposals with Gemini CLI.
