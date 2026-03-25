@@ -114,54 +114,54 @@ Establish the foundation for environment-variable-first configuration by creatin
 
 **`.env`** (Main entry point)
 ```env
-ENV=dev
-SECRET_KEY=django-insecure-placeholder-change-me
+ENV=prod
+SECRET_KEY=randoms-chars
 DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-CORS_ALLOWED_ORIGINS=http://localhost:4321,http://127.0.0.1:8000
-CSRF_TRUSTED_ORIGINS=http://localhost:4321,http://127.0.0.1:8000
+EMAILS_NOTIFICATIONS=test@gmail.com
+EMAIL_HOST=smtp-host
+EMAIL_PORT=465
+EMAIL_HOST_USER=smtp-email
+EMAIL_HOST_PASSWORD=smtp-pass
+EMAIL_USE_SSL=True
 ```
 
 **`.env.dev`** (Local development defaults)
 ```env
+ALLOWED_HOSTS=localhost,127.0.0.1
+CORS_ALLOWED_ORIGINS=http://localhost:4321,http://127.0.0.1:8000
+CSRF_TRUSTED_ORIGINS=http://localhost:4321,http://127.0.0.1:8000
+HOST=http://localhost:8000
 DB_ENGINE=django.db.backends.postgresql
-DB_NAME={project-name}
-DB_USER=postgres
+DB_NAME=
+DB_USER=daridev
 DB_PASSWORD=
 DB_HOST=localhost
 DB_PORT=5432
 STORAGE_AWS=False
 
-EMAILS_NOTIFICATIONS=admin@example.com
-EMAIL_HOST=smtp.example.com
-EMAIL_PORT=465
-EMAIL_HOST_USER=user@example.com
-EMAIL_HOST_PASSWORD=password
-EMAIL_USE_SSL=True
 ```
 
 **`.env.prod`** (Production-ready placeholders)
 ```env
+ALLOWED_HOSTS=localhost,127.0.0.1
+CORS_ALLOWED_ORIGINS=http://localhost:4321,http://127.0.0.1:8000
+CSRF_TRUSTED_ORIGINS=http://localhost:4321,http://127.0.0.1:8000
+HOST=
 DB_ENGINE=django.db.backends.postgresql
-DB_NAME={project-name}
+DB_NAME=
 DB_USER=daridev
 DB_PASSWORD=
-DB_HOST=ip
-DB_PORT=9999
+DB_HOST=
+DB_PORT=
 STORAGE_AWS=True
-AWS_ACCESS_KEY_ID=your-key
-AWS_SECRET_ACCESS_KEY=your-secret
-AWS_STORAGE_BUCKET_NAME=your-bucket
-AWS_S3_REGION_NAME=us-east-1
-AWS_S3_ENDPOINT_URL=https://sfo3.digitaloceanspaces.com
-AWS_PROJECT_FOLDER=leochan-sh
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_STORAGE_BUCKET_NAME=
+AWS_PROJECT_FOLDER=
+AWS_S3_REGION_NAME=
+AWS_S3_ENDPOINT_URL=
+AWS_S3_CUSTOM_DOMAIN=
 
-EMAILS_NOTIFICATIONS=admin@example.com
-EMAIL_HOST=smtp.example.com
-EMAIL_PORT=465
-EMAIL_HOST_USER=user@example.com
-EMAIL_HOST_PASSWORD=password
-EMAIL_USE_SSL=True
 ```
 
 ### 6. Core Settings & App Integration
