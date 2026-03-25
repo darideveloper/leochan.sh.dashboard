@@ -1,63 +1,203 @@
 /* MD DEDITOR */
-/* Container and Toolbar */
+/* 1. MAIN CONTAINER & TOOLBAR */
 .editor-toolbar {
-    background: #161B22; /* Sidebar Background */
-    border: 1px solid #30363D;
-    color: #E6EDF3;
+    background: #161B22 !important; /* Sidebar Background */
+    border: 1px solid #30363D !important; /* Border/Stroke */
+    border-bottom: none !important;
+    opacity: 1 !important;
 }
 
 .editor-toolbar a {
     color: #8B949E !important; /* Secondary Text */
+    transition: all 0.2s ease;
 }
 
-.editor-toolbar a.active, 
-.editor-toolbar a:hover {
+.editor-toolbar a:hover, 
+.editor-toolbar a.active {
     background: #2D1D4D !important; /* Active Highlight */
-    color: #7C3AED !important; /* Primary Accent */
+    color: #7C3AED !important;    /* Primary Accent */
+    border: none !important;
 }
 
-/* The Editor Area */
+/* 2. THE EDITOR (CODEMIRROR) */
 .CodeMirror {
     background: #0B0E14 !important; /* Deep Background */
-    color: #E6EDF3; /* Primary Text */
-    border: 1px solid #30363D;
-    border-top: none;
+    color: #E6EDF3 !important;      /* Primary Text */
+    border: 1px solid #30363D !important;
+    font-family: inherit;
 }
 
-/* Focused State */
-.CodeMirror-focused {
-    border: 1px solid #7C3AED; /* Primary Accent */
+/* Cursor and Selection */
+.CodeMirror-cursor {
+    border-left: 1px solid #7C3AED !important; /* Primary Accent */
 }
 
-/* Input/Text selection */
 .CodeMirror-selected {
     background: #2D1D4D !important; /* Active Highlight */
 }
 
-.CodeMirror-cursor {
-    border-left: 1px solid #7C3AED;
+/* 3. PREVIEW MODE FIXES */
+/* Target the toolbar when preview is active */
+.editor-toolbar.disabled-for-preview {
+    background: #161B22 !important;
 }
 
-/* Preview Windows */
-.editor-preview-side, .editor-preview {
-    background: #0D1117; /* Input Background */
-    color: #E6EDF3;
+/* Mute all disabled buttons in preview */
+.editor-toolbar.disabled-for-preview a {
+    color: #30363D !important; /* Border/Stroke */
+    opacity: 0.4;
 }
 
-/* Status Bar */
+/* Keep functional buttons (Eye, Undo, Redo) visible */
+.editor-toolbar.disabled-for-preview a.no-disable {
+    opacity: 1;
+    color: #8B949E !important; /* Secondary Text */
+}
+
+/* Specifically style the active "Eye" (Preview) button */
+.editor-toolbar.disabled-for-preview a.fa-eye.active {
+    background: #2D1D4D !important; /* Active Highlight */
+    color: #7C3AED !important;    /* Primary Accent */
+    opacity: 1;
+}
+
+/* Preview Area Background */
+.editor-preview, .editor-preview-side {
+    background: #0D1117 !important; /* Input Background */
+    color: #E6EDF3 !important;      /* Primary Text */
+}
+
+/* 4. STATUS BAR */
 .editor-statusbar {
-    color: #8B949E;
-    background: #161B22;
-    border: 1px solid #30363D;
-    border-top: none;
+    background: #161B22 !important;
+    color: #8B949E !important;      /* Secondary Text */
+    border: 1px solid #30363D !important;
+    border-top: none !important;
 }
 
-/* Styling Markdown Syntax specifically */
-.cm-header { color: #7C3AED; font-weight: bold; }
-.cm-link { color: #7C3AED; }
-.cm-url { color: #8B949E; }
-.cm-variable-2 { color: #E6EDF3; } /* List bullets/etc */
+.editor-statusbar span {
+    color: #8B949E !important;
+}
 
+/* 5. SYNTAX HIGHLIGHTING (OPTIONAL) */
+.cm-header { color: #7C3AED !important; font-weight: bold; }
+.cm-url, .cm-link { color: #7C3AED !important; }
+.cm-comment { color: #8B949E !important; }
+.cm-string { color: #E6EDF3 !important; }
+
+/* Disable toolbar buttons background color */
+.editor-toolbar.disabled-for-preview a {
+	background: transparent !important;
+}
+
+/* 6. SEPARATORS */
+.editor-toolbar i.separator {
+    border-left: 1px solid #30363D !important;
+    border-right: none !important;
+    color: transparent !important;
+    text-indent: -9999px;
+    margin: 0 4px;
+}
+
+/* MARKDOWN PREVIEW STYLES */
+/* --- PREVIEW CONTENT OVERRIDES (FORCING DJANGO ADMIN DEFAULTS OUT) --- */
+
+/* Reset the base preview container */
+.editor-preview, 
+.editor-preview-side,
+.editor-preview-active {
+    background: #0D1117 !important; /* Input Background */
+    color: #E6EDF3 !important;      /* Primary Text */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif !important;
+    line-height: 1.6 !important;
+    padding: 20px !important;
+}
+
+/* Force Headings to use Primary Accent */
+.editor-preview h1, .editor-preview-side h1,
+.editor-preview h2, .editor-preview-side h2,
+.editor-preview h3, .editor-preview-side h3 {
+    color: #7C3AED !important; /* Primary Accent */
+    margin-top: 24px !important;
+    margin-bottom: 16px !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    border-bottom: 1px solid #30363D !important; /* Border/Stroke */
+    padding-bottom: 0.3em !important;
+}
+
+.editor-preview h1 { font-size: 2em !important; }
+.editor-preview h2 { font-size: 1.5em !important; }
+.editor-preview h3 { font-size: 1.25em !important; }
+
+/* Paragraphs and Spacing */
+.editor-preview p, .editor-preview-side p {
+    margin-top: 0 !important;
+    margin-bottom: 16px !important;
+    color: #E6EDF3 !important;
+}
+
+/* Lists (Django Admin often breaks these) */
+.editor-preview ul, .editor-preview-side ul,
+.editor-preview ol, .editor-preview-side ol {
+    padding-left: 2em !important;
+    margin-bottom: 16px !important;
+    color: #E6EDF3 !important;
+    list-style: disc !important; /* Force bullets back */
+}
+
+.editor-preview ol {
+    list-style: decimal !important;
+}
+
+.editor-preview li {
+    margin-top: 0.25em !important;
+}
+
+/* Blockquotes */
+.editor-preview blockquote, .editor-preview-side blockquote {
+    padding: 0 1em !important;
+    color: #8B949E !important; /* Secondary Text */
+    border-left: 0.25em solid #7C3AED !important; /* Primary Accent */
+    margin: 0 0 16px 0 !important;
+}
+
+/* Code Blocks */
+.editor-preview code, .editor-preview-side code {
+    padding: 0.2em 0.4em !important;
+    margin: 0 !important;
+    font-size: 85% !important;
+    background-color: #1F2937 !important; /* Secondary Button shade */
+    border-radius: 6px !important;
+    font-family: monospace !important;
+}
+
+.editor-preview pre, .editor-preview-side pre {
+    padding: 16px !important;
+    overflow: auto !important;
+    font-size: 85% !important;
+    line-height: 1.45 !important;
+    background-color: #161B22 !important; /* Sidebar Background */
+    border-radius: 6px !important;
+    margin-bottom: 16px !important;
+}
+
+/* Links */
+.editor-preview a, .editor-preview-side a {
+    color: #7C3AED !important;
+    text-decoration: none !important;
+}
+
+.editor-preview a:hover {
+    text-decoration: underline !important;
+}
+
+/* Images */
+.editor-preview img, .editor-preview-side img {
+    max-width: 100% !important;
+    box-sizing: content-box !important;
+    background-color: transparent !important;
+}
 
 /* INLINE FIELDS */
 #content h2 {
