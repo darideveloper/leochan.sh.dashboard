@@ -1,0 +1,66 @@
+/* MD DEDITOR */
+/* Container and Toolbar */
+.editor-toolbar {
+    background: #161B22; /* Sidebar Background */
+    border: 1px solid #30363D;
+    color: #E6EDF3;
+}
+
+.editor-toolbar a {
+    color: #8B949E !important; /* Secondary Text */
+}
+
+.editor-toolbar a.active, 
+.editor-toolbar a:hover {
+    background: #2D1D4D !important; /* Active Highlight */
+    color: #7C3AED !important; /* Primary Accent */
+}
+
+/* The Editor Area */
+.CodeMirror {
+    background: #0B0E14 !important; /* Deep Background */
+    color: #E6EDF3; /* Primary Text */
+    border: 1px solid #30363D;
+    border-top: none;
+}
+
+/* Focused State */
+.CodeMirror-focused {
+    border: 1px solid #7C3AED; /* Primary Accent */
+}
+
+/* Input/Text selection */
+.CodeMirror-selected {
+    background: #2D1D4D !important; /* Active Highlight */
+}
+
+.CodeMirror-cursor {
+    border-left: 1px solid #7C3AED;
+}
+
+/* Preview Windows */
+.editor-preview-side, .editor-preview {
+    background: #0D1117; /* Input Background */
+    color: #E6EDF3;
+}
+
+/* Status Bar */
+.editor-statusbar {
+    color: #8B949E;
+    background: #161B22;
+    border: 1px solid #30363D;
+    border-top: none;
+}
+
+/* Styling Markdown Syntax specifically */
+.cm-header { color: #7C3AED; font-weight: bold; }
+.cm-link { color: #7C3AED; }
+.cm-url { color: #8B949E; }
+.cm-variable-2 { color: #E6EDF3; } /* List bullets/etc */
+
+
+/* INLINE FIELDS */
+#content h2 {
+	font-size: 20px;
+    margin-top: 20px;	
+}

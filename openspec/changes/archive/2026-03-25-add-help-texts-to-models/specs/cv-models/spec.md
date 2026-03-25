@@ -1,8 +1,7 @@
-# cv-models Specification
+# cv-models Specification Delta
 
-## Purpose
-TBD - created by archiving change define-cv-and-portfolio-models. Update Purpose after archive.
-## Requirements
+## MODIFIED Requirements
+
 ### Requirement: Singleton CV Profile
 The system SHALL maintain a single profile representing the CV owner's primary details.
 
@@ -71,6 +70,8 @@ The system SHALL list languages and proficiency levels.
   - `order` (Int): help_text="Display order (lower numbers appear first)."
 - Relation: `ForeignKey` to `Profile`.
 
+## ADDED Requirements
+
 ### Requirement: Aeronautical Skills
 The system SHALL store aeronautical skills or certifications.
 
@@ -90,4 +91,3 @@ The system SHALL store personal interests and hobbies.
   - `name` (Char): help_text="A personal interest or hobby (e.g., Aviation, Video Editing)."
   - `order` (Int): help_text="Display order (lower numbers appear first)."
 - Relation: `ForeignKey` to `Profile`.
-

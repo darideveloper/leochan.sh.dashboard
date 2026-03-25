@@ -1,8 +1,7 @@
-# portfolio-models Specification
+# portfolio-models Specification Delta
 
-## Purpose
-TBD - created by archiving change define-cv-and-portfolio-models. Update Purpose after archive.
-## Requirements
+## MODIFIED Requirements
+
 ### Requirement: Technology Tags
 The system SHALL maintain a reusable list of technologies for tagging projects.
 
@@ -29,4 +28,3 @@ The system SHALL store project information for showcase purposes.
   - `date`: `CharField`. help_text="Year or date range of the project (e.g., 2023)."
   - `is_cv_highlight`: `BooleanField`. help_text="If checked, this project will be highlighted in the CV section."
 - Relations: `ManyToMany` with `Technology`. help_text="List of technologies used in this project."
-

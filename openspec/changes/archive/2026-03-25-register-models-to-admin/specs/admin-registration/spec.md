@@ -3,7 +3,7 @@
 ## Purpose
 Define requirements for registering CV and Portfolio models in the Django admin interface with enhanced UI features and automatic sidebar navigation.
 
-## MODIFIED Requirements
+## ADDED Requirements
 ### Requirement: Register CV Models to Admin
 All models in the `cv` application MUST be registered in the Django admin using `django-unfold` base classes.
 
