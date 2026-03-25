@@ -320,6 +320,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
+    "EXCEPTION_HANDLER": "project.handlers.custom_exception_handler",
 }
 ```
 
@@ -357,11 +358,11 @@ python manage.py check
 python manage.py test
 ```
 
-### 10. Project Assets & Customizations
-Create the following directories and files to support cloud storage, admin overrides, and styling.
+### 10. Required Project Wiring
+These files are essential for the infrastructure and global behaviors defined in `settings.py`.
 
 #### project/pagination.py
-Implement custom pagination to provide metadata-rich API responses.
+Custom pagination logic for metadata-rich API responses.
 ```python
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -395,21 +396,44 @@ class StaticStorage(S3Boto3Storage):
     default_acl = "public-read"
 
 class PublicMediaStorage(S3Boto3Storage):
-    """Handles public uploads (user avatars, post images)."""
+    """Handles public uploads."""
     location = settings.PUBLIC_MEDIA_LOCATION
     default_acl = "public-read"
     file_overwrite = False
 
 class PrivateMediaStorage(S3Boto3Storage):
-    """Handles sensitive files (documents, private videos)."""
+    """Handles sensitive files."""
     location = settings.PRIVATE_MEDIA_LOCATION
     default_acl = "private"
     file_overwrite = False
     custom_domain = False
 ```
 
+#### project/handlers.py
+Custom exception handler for standardized API error responses.
+```python
+from rest_framework.views import exception_handler
+
+def custom_exception_handler(exc, context):
+    response = exception_handler(exc, context)
+
+    if response is not None:
+        original_data = response.data
+        response.data = {}
+        response.data['status'] = "error"
+        details = original_data.get('detail', None)
+        if details:
+            del original_data['detail']
+            response.data['message'] = str(details)
+        else:
+            response.data['message'] = "Invalid data"
+        response.data['data'] = original_data
+            
+    return response
+```
+
 #### project/templates/admin/base.html
-Overrides the Django admin base template to include external libraries (e.g., SimpleMDE).
+Overrides for the Django admin interface.
 ```html
 {% extends "admin/base.html" %} {% load static %} {% block extrahead %}
 {{block.super }}
@@ -422,8 +446,80 @@ Overrides the Django admin base template to include external libraries (e.g., Si
 {% endblock %}
 ```
 
-#### static/js/add_tailwind_styles.js
-Dynamically adds Tailwind CSS classes to specific elements.
+### 11. Optional Reusable Utilities
+Standalone helpers that can be imported by any app to extend functionality.
+
+#### utils/admin_helpers.py
+Logic for validating admin and support group permissions.
+```python
+from django.contrib.auth.models import User
+
+def is_user_admin(user: User):
+    user_grups = user.groups.all()
+    user_in_admin_group = False
+    for group in user_grups:
+        if group.name in ["admins", "supports"]:
+            user_in_admin_group = True
+            break
+    return user_in_admin_group or user.is_superuser
+```
+
+#### utils/automation.py
+Selenium-based web automation and element selection helpers.
+```python
+from selenium import webdriver
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.common.by import By
+
+def get_selenium_elems(driver: webdriver, selectors: dict) -> dict[str, WebElement]:
+    fields = {}
+    for key, value in selectors.items():
+        try:
+            fields[key] = driver.find_element(By.CSS_SELECTOR, value)
+        except Exception:
+            fields[key] = None
+    return fields
+```
+
+#### utils/media.py
+Image processing and media URL resolution helpers.
+```python
+import os
+from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+def get_media_url(object_or_url: object) -> str:
+    url_str = ""
+    if type(object_or_url) is str:
+        url_str = object_or_url
+    else:
+        url_str = object_or_url.url
+
+    if "s3.amazonaws.com" not in url_str and "digitaloceanspaces" not in url_str:
+        return f"{settings.HOST}{url_str}"
+    return url_str
+
+def get_test_image(image_name: str = "test.webp") -> SimpleUploadedFile:
+    app_path = os.path.dirname(os.path.abspath(__file__))
+    project_path = os.path.dirname(app_path)
+    media_path = os.path.join(project_path, "media")
+
+    image_path = os.path.join(media_path, image_name)
+    image_file = SimpleUploadedFile(
+        name=image_name,
+        content=open(image_path, "rb").read(),
+        content_type="image/webp",
+    )
+    return image_file
+```
+
+#### static/js/ Custom Scripts
+The project includes several dynamic scripts in `static/js/`. 
+
+> **Note:** Most of these scripts are designed for and will be utilized in a future integration with **django-unfold** to enhance the admin interface and functionality.
+
+**static/js/add_tailwind_styles.js**
+Adds Tailwind classes on load.
 ```javascript
 // Insert talwind code to specific html elements
 
@@ -449,8 +545,8 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 ```
 
-#### static/js/copy_clipboard.js
-Handles copying URLs to the clipboard based on cookies.
+**static/js/copy_clipboard.js**
+Utility for cookie-based clipboard operations.
 ```javascript
 // clipboard_handler.js
 document.addEventListener('DOMContentLoaded', () => {
@@ -474,8 +570,8 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 ```
 
-#### static/js/load_markdown.js
-Initializes SimpleMDE for specific text areas.
+**static/js/load_markdown.js**
+SimpleMDE integration for text areas.
 ```javascript
 // Runs script when page loads
 document.addEventListener("DOMContentLoaded", () => {
@@ -508,8 +604,8 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 ```
 
-#### static/js/range_date_filter_es.js
-Updates placeholder text for date filters.
+**static/js/range_date_filter_es.js**
+Localization for date filters.
 ```javascript
 // Update placeholder text for unfold range date filter
 
@@ -536,8 +632,8 @@ document.addEventListener("DOMContentLoaded", function () {
 })
 ```
 
-#### static/js/script.js
-General-purpose JavaScript logic (empty by default).
+**static/js/script.js**
+General-purpose logic.
 ```javascript
 // Add custom project-wide JavaScript here
 ```
@@ -547,14 +643,3 @@ General-purpose JavaScript logic (empty by default).
 - **static/logo.svg** and **static/favicon.png**: Add your project's logo and favicon. 
   > **Note:** Prompt the user to check if they have specific logo and favicon files to use, or if they would like to create placeholders or new ones now.
 - **media/**: Create an empty directory in the root for local file uploads.
-
-### 11. OpenSpec Setup (Gemini CLI)
-Initialize and configure OpenSpec to manage project context and change proposals with Gemini CLI.
-
-```bash
-openspec init
-```
-
-After initialization, run the following command in Gemini CLI to populate your project context:
-
-> "Please read openspec/project.md and help me fill it out with details about my project, tech stack, and conventions"

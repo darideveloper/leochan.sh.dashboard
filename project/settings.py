@@ -243,6 +243,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
+    "EXCEPTION_HANDLER": "project.handlers.custom_exception_handler",
 }
 
 # Global datetime format
