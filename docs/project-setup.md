@@ -118,18 +118,18 @@ ENV=dev
 SECRET_KEY=django-insecure-placeholder-change-me
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
-CORS_ALLOWED_ORIGINS=http://localhost:3000
-CSRF_TRUSTED_ORIGINS=http://localhost:3000
+CORS_ALLOWED_ORIGINS=http://localhost:4321,http://127.0.0.1:8000
+CSRF_TRUSTED_ORIGINS=http://localhost:4321,http://127.0.0.1:8000
 ```
 
 **`.env.dev`** (Local development defaults)
 ```env
-DB_ENGINE=django.db.backends.sqlite3
-DB_NAME=db.sqlite3
-DB_USER=
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME={project-name}
+DB_USER=postgres
 DB_PASSWORD=
-DB_HOST=
-DB_PORT=
+DB_HOST=localhost
+DB_PORT=5432
 STORAGE_AWS=False
 
 EMAILs_NOTIFICATIONS=admin@example.com
@@ -137,18 +137,17 @@ EMAIL_HOST=smtp.example.com
 EMAIL_PORT=587
 EMAIL_HOST_USER=user@example.com
 EMAIL_HOST_PASSWORD=password
-EMAIL_USE_TLS=True
-EMAIL_USE_SSL=False
+EMAIL_USE_SSL=True
 ```
 
 **`.env.prod`** (Production-ready placeholders)
 ```env
 DB_ENGINE=django.db.backends.postgresql
-DB_NAME=leochan_db
-DB_USER=admin
-DB_PASSWORD=secure-password
-DB_HOST=db-host
-DB_PORT=5432
+DB_NAME={project-name}
+DB_USER=daridev
+DB_PASSWORD=
+DB_HOST=ip
+DB_PORT=9999
 STORAGE_AWS=True
 AWS_ACCESS_KEY_ID=your-key
 AWS_SECRET_ACCESS_KEY=your-secret
@@ -161,8 +160,7 @@ EMAIL_HOST=smtp.example.com
 EMAIL_PORT=587
 EMAIL_HOST_USER=user@example.com
 EMAIL_HOST_PASSWORD=password
-EMAIL_USE_TLS=True
-EMAIL_USE_SSL=False
+EMAIL_USE_SSL=True
 ```
 
 ### 6. Core Settings & App Integration
@@ -643,3 +641,29 @@ General-purpose logic.
 - **static/logo.svg** and **static/favicon.png**: Add your project's logo and favicon. 
   > **Note:** Prompt the user to check if they have specific logo and favicon files to use, or if they would like to create placeholders or new ones now.
 - **media/**: Create an empty directory in the root for local file uploads.
+
+### 12. Database Initialization
+Prepare and apply the initial database migrations, then create an administrative user.
+
+```bash
+# Create migration files for all apps
+python manage.py makemigrations
+
+# Apply migrations to the database
+python manage.py migrate
+
+# Create an administrative user
+# Note: You will be prompted to enter a username, email, and password.
+python manage.py createsuperuser
+```
+
+### 13. OpenSpec Setup (Gemini CLI)
+Initialize and configure OpenSpec to manage project context and change proposals with Gemini CLI.
+
+```bash
+openspec init
+```
+
+After initialization, run the following command in Gemini CLI to populate your project context:
+
+> "Please read openspec/project.md and help me fill it out with details about my project, tech stack, and conventions"

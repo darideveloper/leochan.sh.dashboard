@@ -40,6 +40,7 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 INSTALLED_APPS = [
     # Local apps
+    "cv",
     "portfolio",
 
     # Third-party apps
