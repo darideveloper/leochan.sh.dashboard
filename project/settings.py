@@ -10,27 +10,44 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
+import sys
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Setup .env file
+load_dotenv()
+ENV = os.getenv("ENV", "dev")
+env_path = os.path.join(BASE_DIR, f".env.{ENV}")
+load_dotenv(env_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-w0sqyt&pg3f(14ugtp2h#9ldl&0w3=rz8%lo#)xev&3h25pzp&'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    # Local apps
+    "portfolio",
+
+    # Third-party apps
+    "corsheaders",
+    "rest_framework",
+    "solo",
+
+    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +59,10 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # Manage static files
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    # Cors
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -54,7 +75,7 @@ ROOT_URLCONF = 'project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "project", "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -72,13 +93,34 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+import sys
+IS_TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
+if IS_TESTING:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "testing.sqlite3"),
+        }
     }
-}
-
+else:
+    options = {}
+    if os.environ.get("DB_ENGINE") == "django.db.backends.mysql":
+        options = {
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+            "charset": "utf8mb4",
+        }
+    
+    DATABASES = {
+        "default": {
+            "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
+            "NAME": os.environ.get("DB_NAME", os.path.join(BASE_DIR, "db.sqlite3")),
+            "USER": os.environ.get("DB_USER", ""),
+            "PASSWORD": os.environ.get("DB_PASSWORD", ""),
+            "HOST": os.environ.get("DB_HOST", "localhost"),
+            "PORT": os.environ.get("DB_PORT", ""),
+            "OPTIONS": options,
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -104,7 +146,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "America/Mexico_City"
 
 USE_I18N = True
 
@@ -115,8 +157,106 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL = "/media/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# Storage settings
+STORAGE_AWS = os.getenv("STORAGE_AWS") == "True"
+
+if STORAGE_AWS:
+    # 1. Credentials
+    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+
+    # 2. Regional Settings
+    AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")
+    AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME")
+
+    # 3. Domain/CDN settings
+    AWS_S3_CUSTOM_DOMAIN = os.getenv("AWS_S3_CUSTOM_DOMAIN")
+
+    # 4. Folder isolation
+    AWS_PROJECT_FOLDER = os.getenv("AWS_PROJECT_FOLDER")
+
+    # 5. File Locations
+    STATIC_LOCATION = f"{AWS_PROJECT_FOLDER}/static"
+    PUBLIC_MEDIA_LOCATION = f"{AWS_PROJECT_FOLDER}/media"
+    PRIVATE_MEDIA_LOCATION = f"{AWS_PROJECT_FOLDER}/private"
+
+    # 6. Django-Storages Engine Mapping
+    STORAGES = {
+        "default": {
+            "BACKEND": "project.storage_backends.PublicMediaStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "project.storage_backends.StaticStorage",
+        },
+        "private": {
+            "BACKEND": "project.storage_backends.PrivateMediaStorage",
+        },
+    }
+
+    # 7. Optimization & Security
+    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+    AWS_DEFAULT_ACL = None
+else:
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Cors & CSRF
+cors_allowed = os.getenv("CORS_ALLOWED_ORIGINS")
+if cors_allowed and cors_allowed != "None":
+    CORS_ALLOWED_ORIGINS = [
+        origin.strip().rstrip("/") for origin in cors_allowed.split(",") if origin.strip()
+    ]
+
+csrf_trusted = os.getenv("CSRF_TRUSTED_ORIGINS")
+if csrf_trusted and csrf_trusted != "None":
+    CSRF_TRUSTED_ORIGINS = [
+        origin.strip().rstrip("/") for origin in csrf_trusted.split(",") if origin.strip()
+    ]
+
+# Setup DRF
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PAGINATION_CLASS": "project.pagination.CustomPageNumberPagination",
+    "PAGE_SIZE": 12,
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
+}
+
+# Global datetime format
+DATE_FORMAT = "d/b/Y"
+TIME_FORMAT = "H:i"
+DATETIME_FORMAT = f"{DATE_FORMAT} {TIME_FORMAT}"
+
+# Setup emails
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
+EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL") == "True"
+EMAIL_FROM = EMAIL_HOST_USER
+EMAILS_LEADS_NOTIFICATIONS = os.getenv("EMAILS_LEADS_NOTIFICATIONS", "").split(",")
