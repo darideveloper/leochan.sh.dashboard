@@ -458,6 +458,25 @@ def custom_exception_handler(exc, context):
     return response
 ```
 
+#### project/templates/admin/base.html
+Customizes the Django Unfold admin theme by loading additional CSS and JavaScript libraries.
+```html
+{% extends "unfold/layouts/base.html" %} {% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<!-- Load markdown libraries -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css" />
+<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
+<!-- Load Unfold custom scripts -->
+<script src="{% static 'js/add_tailwind_styles.js' %}"></script>
+<script src="{% static 'js/load_markdown.js' %}"></script>
+<script src="{% static 'js/range_date_filter_es.js' %}"></script>
+{% endblock %}
+```
+
 ### 11. Optional Reusable Utilities
 Standalone helpers that can be imported by any app to extend functionality.
 
