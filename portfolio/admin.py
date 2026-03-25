@@ -1,6 +1,7 @@
 from django.contrib import admin
 from unfold.admin import ModelAdmin
 from .models import Technology, Project
+from project import admin as _
 
 @admin.register(Technology)
 class TechnologyAdmin(ModelAdmin):
