@@ -132,9 +132,9 @@ DB_HOST=localhost
 DB_PORT=5432
 STORAGE_AWS=False
 
-EMAILs_NOTIFICATIONS=admin@example.com
+EMAILS_NOTIFICATIONS=admin@example.com
 EMAIL_HOST=smtp.example.com
-EMAIL_PORT=587
+EMAIL_PORT=465
 EMAIL_HOST_USER=user@example.com
 EMAIL_HOST_PASSWORD=password
 EMAIL_USE_SSL=True
@@ -153,11 +153,12 @@ AWS_ACCESS_KEY_ID=your-key
 AWS_SECRET_ACCESS_KEY=your-secret
 AWS_STORAGE_BUCKET_NAME=your-bucket
 AWS_S3_REGION_NAME=us-east-1
+AWS_S3_ENDPOINT_URL=https://sfo3.digitaloceanspaces.com
 AWS_PROJECT_FOLDER=leochan-sh
 
-EMAILs_NOTIFICATIONS=admin@example.com
+EMAILS_NOTIFICATIONS=admin@example.com
 EMAIL_HOST=smtp.example.com
-EMAIL_PORT=587
+EMAIL_PORT=465
 EMAIL_HOST_USER=user@example.com
 EMAIL_HOST_PASSWORD=password
 EMAIL_USE_SSL=True
@@ -191,7 +192,7 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 ```
 
 **Update `INSTALLED_APPS` and `MIDDLEWARE`:**
-- Include `corsheaders`, `rest_framework`, and `solo`.
+- Include `corsheaders`, `rest_framework`, `solo`, and `storages`.
 - **Add your local application:** Include the `{app_name}` you created in Step 3 in `INSTALLED_APPS`.
 - Add `CorsMiddleware` and `WhiteNoiseMiddleware` to `MIDDLEWARE`.
 
@@ -263,6 +264,7 @@ if STORAGE_AWS:
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
     AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME")
+    AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")
     AWS_PROJECT_FOLDER = os.getenv("AWS_PROJECT_FOLDER")
 
     STORAGES = {
@@ -339,10 +341,9 @@ EMAIL_HOST = os.getenv("EMAIL_HOST")
 EMAIL_PORT = os.getenv("EMAIL_PORT")
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL") == "True"
 EMAIL_FROM = EMAIL_HOST_USER
-EMAILS_NOTIFICATIONS = os.getenv("EMAILS_LEADS_NOTIFICATIONS", "").split(",")
+EMAILS_NOTIFICATIONS = os.getenv("EMAILS_NOTIFICATIONS", "").split(",")
 ```
 
 ### 9. Validation
@@ -645,6 +646,20 @@ ARG DB_PORT
 ARG CORS_ALLOWED_ORIGINS
 ARG CSRF_TRUSTED_ORIGINS
 
+# AWS and Storage ARGs
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+ARG AWS_STORAGE_BUCKET_NAME
+ARG AWS_S3_REGION_NAME
+ARG AWS_S3_ENDPOINT_URL
+ARG AWS_S3_CUSTOM_DOMAIN
+ARG STORAGE_AWS
+
+# General Configuration ARGs
+ARG ENV
+ARG DEBUG
+ARG ALLOWED_HOSTS
+
 # Export them as ENVs so the 'RUN' commands below can see them
 ENV SECRET_KEY=${SECRET_KEY} \
     DB_ENGINE=${DB_ENGINE} \
@@ -655,6 +670,18 @@ ENV SECRET_KEY=${SECRET_KEY} \
     DB_PORT=${DB_PORT} \
     CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS} \
     CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS}
+
+ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+    AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+    AWS_STORAGE_BUCKET_NAME=${AWS_STORAGE_BUCKET_NAME} \
+    AWS_S3_REGION_NAME=${AWS_S3_REGION_NAME} \
+    AWS_S3_ENDPOINT_URL=${AWS_S3_ENDPOINT_URL} \
+    AWS_S3_CUSTOM_DOMAIN=${AWS_S3_CUSTOM_DOMAIN} \
+    STORAGE_AWS=${STORAGE_AWS}
+
+ENV ENV=${ENV} \
+    DEBUG=${DEBUG} \
+    ALLOWED_HOSTS=${ALLOWED_HOSTS}
 
 # Install system dependencies (e.g., for PostgreSQL support)
 RUN apt-get update && apt-get install -y \
@@ -692,4 +719,3 @@ python manage.py migrate --noinput
 echo "Starting Gunicorn..."
 exec gunicorn --bind 0.0.0.0:80 project.wsgi:application
 ```
-

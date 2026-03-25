@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "unfold.contrib.filters",
     "unfold.contrib.forms",
     "unfold.contrib.inlines",
+
     # Local apps
     "cv",
     "portfolio",
@@ -56,6 +57,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "solo",
+    "storages",
 
     # Django apps
     'django.contrib.admin',
@@ -103,7 +105,6 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-import sys
 IS_TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 if IS_TESTING:
     DATABASES = {
@@ -267,10 +268,9 @@ EMAIL_HOST = os.getenv("EMAIL_HOST")
 EMAIL_PORT = os.getenv("EMAIL_PORT")
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL") == "True"
 EMAIL_FROM = EMAIL_HOST_USER
-EMAILS_LEADS_NOTIFICATIONS = os.getenv("EMAILS_LEADS_NOTIFICATIONS", "").split(",")
+EMAILS_NOTIFICATIONS = os.getenv("EMAILS_NOTIFICATIONS", "").split(",")
 
 # Django Unfold Configuration
 UNFOLD = {

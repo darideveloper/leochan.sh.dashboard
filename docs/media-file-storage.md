@@ -23,9 +23,9 @@ boto3==1.34.162
 
 ## 🛠️ Storage Backends
 
-To maintain separation between **Static Files**, **Public Media**, and **Private Media**, we use custom storage classes. These are defined in `nyx_dashboard/storage_backends.py`.
+To maintain separation between **Static Files**, **Public Media**, and **Private Media**, we use custom storage classes. These are defined in `project/storage_backends.py`.
 
-### Definition File: `nyx_dashboard/storage_backends.py`
+### Definition File: `project/storage_backends.py`
 
 ```python
 from django.conf import settings
@@ -98,20 +98,32 @@ if STORAGE_AWS:
     PUBLIC_MEDIA_LOCATION = f"{AWS_PROJECT_FOLDER}/media"
     PRIVATE_MEDIA_LOCATION = f"{AWS_PROJECT_FOLDER}/private"
 
-    # 6. Django-Storages Engine Mapping
-    STATICFILES_STORAGE = "nyx_dashboard.storage_backends.StaticStorage"
-    DEFAULT_FILE_STORAGE = "nyx_dashboard.storage_backends.PublicMediaStorage"
-    PRIVATE_FILE_STORAGE = "nyx_dashboard.storage_backends.PrivateMediaStorage"
+    # 6. Django-Storages Engine Mapping (Django 4.2+)
+    STORAGES = {
+        "default": {
+            "BACKEND": "project.storage_backends.PublicMediaStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "project.storage_backends.StaticStorage",
+        },
+        "private": {
+            "BACKEND": "project.storage_backends.PrivateMediaStorage",
+        },
+    }
 
     # 7. Optimization & Security
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
     AWS_DEFAULT_ACL = None
 else:
     # Fallback to local storage for development
-    STATIC_URL = "/static/"
-    MEDIA_URL = "/media/"
-    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 ```
 
 ---
@@ -124,10 +136,33 @@ else:
 | `AWS_ACCESS_KEY_ID` | Your API access key | `DO00U7QPCPCCGJ3W7QNC` |
 | `AWS_SECRET_ACCESS_KEY` | Your API secret key | `QR0mj22q...` |
 | `AWS_STORAGE_BUCKET_NAME`| The name of the bucket/space | `my-project-storage` |
-| `AWS_PROJECT_FOLDER` | Subfolder inside the bucket | `nyx-dashboard` |
+| `AWS_PROJECT_FOLDER` | Subfolder inside the bucket | `leochan-sh` |
 | `AWS_S3_REGION_NAME` | Cloud region | `sfo3` |
 | `AWS_S3_ENDPOINT_URL` | API endpoint | `https://sfo3.digitaloceanspaces.com` |
 | `AWS_S3_CUSTOM_DOMAIN` | CDN or Custom domain | `bucket.sfo3.cdn.digitaloceanspaces.com` |
+
+---
+
+## 🐳 Docker / CI/CD Considerations
+
+Since `collectstatic` is typically executed during the Docker build process to prepare the application for production, you must ensure the container has access to S3 credentials **during the build**.
+
+In your `Dockerfile`, ensure the following build arguments are defined before the `RUN python manage.py collectstatic` command:
+
+```dockerfile
+# Required for collectstatic to upload to S3 during build
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+ARG AWS_STORAGE_BUCKET_NAME
+ARG AWS_S3_ENDPOINT_URL
+ARG STORAGE_AWS
+
+ENV AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+    AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+    AWS_STORAGE_BUCKET_NAME=${AWS_STORAGE_BUCKET_NAME} \
+    AWS_S3_ENDPOINT_URL=${AWS_S3_ENDPOINT_URL} \
+    STORAGE_AWS=${STORAGE_AWS}
+```
 
 ---
 
