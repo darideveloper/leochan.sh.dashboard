@@ -18,6 +18,5 @@ info.txt
 .vscode
 */.DS_Store 
 .DS_Store
-/docs 
 *.temp
 .windsurf/
