@@ -30,3 +30,15 @@ The system SHALL store project information for showcase purposes.
   - `is_cv_highlight`: `BooleanField`. help_text="If checked, this project will be highlighted in the CV section."
 - Relations: `ManyToMany` with `Technology`. help_text="List of technologies used in this project."
 
+### Requirement: Project Tasks
+The system SHALL store structured tasks for each project, primarily for CV highlights.
+
+#### Scenario: Define ProjectTask Model
+- Model name: `ProjectTask`.
+- Fields:
+  - `project`: `ForeignKey` to `Project` (related_name="tasks").
+  - `description`: `CharField`. help_text="A specific task or achievement in this project (e.g., 'Coded in Arduino')."
+  - `order`: `PositiveIntegerField`. help_text="Display order (lower numbers appear first)."
+- Meta:
+  - `ordering`: `['order']`
+

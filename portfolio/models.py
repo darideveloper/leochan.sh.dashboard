@@ -67,3 +67,22 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+class ProjectTask(models.Model):
+    project = models.ForeignKey(
+        Project, related_name="tasks", on_delete=models.CASCADE
+    )
+    description = models.CharField(
+        max_length=255,
+        help_text="A specific task or achievement in this project (e.g., 'Coded in Arduino').",
+    )
+    order = models.PositiveIntegerField(
+        default=0, db_index=True, help_text="Display order (lower numbers appear first)."
+    )
+
+    class Meta:
+        ordering = ["order"]
+        verbose_name = "Project Task"
+
+    def __str__(self):
+        return self.description
