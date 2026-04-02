@@ -1,0 +1,29 @@
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+April 01, 2026 - 23:14:07
+Django version 5.2.12, using settings 'project.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+WARNING: This is a development server. Do not use it in a production setting. Use a production WSGI or ASGI server instead.
+For more information on production servers see: https://docs.djangoproject.com/en/5.2/howto/deployment/
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: New Contact Message from Test User
+From: no-reply@daridev.online
+To: darideveloper@gmail.com
+Date: Thu, 02 Apr 2026 05:14:18 -0000
+Message-ID: <177510685896.480036.16361952948799793795@daridev-lite>
+
+Name: Test User
+Email: test@example.com
+
+Message:
+This is a test message.
+-------------------------------------------------------------------------------
+[01/Apr/2026 23:14:18] "POST /api/contact/ HTTP/1.1" 201 131
+/mnt/hd/develop/django/leochan.sh.dashboard/project/settings.py changed, reloading.
+Watching for file changes with StatReloader

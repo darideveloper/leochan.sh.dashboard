@@ -23,6 +23,7 @@ urlpatterns = [
     ),
     # API Endpoints
     path("api/", include(router.urls)),
+    path("api/", include("shared.urls")),
 ]
 
 # Serve Media Files in Development

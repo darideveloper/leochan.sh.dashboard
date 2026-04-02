@@ -7,7 +7,7 @@ from unfold.decorators import action
 
 from utils.media import get_media_url
 
-from .models import Image
+from .models import Image, ContactMessage
 
 @admin.register(Image)
 class ImageAdmin(ModelAdmin):
@@ -42,3 +42,11 @@ class ImageAdmin(ModelAdmin):
         response.set_cookie("copy_to_clipboard", image_url, max_age=10)
 
         return response
+
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(ModelAdmin):
+    list_display = ["name", "email", "created_at"]
+    search_fields = ["name", "email", "message"]
+    readonly_fields = ["name", "email", "message", "created_at"]
+    date_hierarchy = "created_at"
