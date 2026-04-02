@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
-from .models import Profile, Experience, Education, SkillCategory, Skill
+from .models import Profile, Experience, Education, SkillCategory, Skill, AeronauticalSkill, Interest, Language
 
 class CVAPITestCase(APITestCase):
     def setUp(self):
@@ -64,3 +64,82 @@ class CVAPITestCase(APITestCase):
         # Test education details split
         self.assertEqual(len(data["education"]), 1)
         self.assertEqual(data["education"][0]["details"], ["Master's degree", "Specialization in Networks"])
+
+
+class CVAPIExtensiveTestCase(APITestCase):
+    def setUp(self):
+        Profile.objects.all().delete()
+        self.profile = Profile.get_solo()
+
+    def test_empty_profile(self):
+        """Test API response when the profile is empty."""
+        response = self.client.get("/api/cv/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], "")
+        self.assertEqual(response.data["aboutMe"], "")
+        self.assertEqual(response.data["contact"]["email"], "")
+        self.assertEqual(response.data["technicalSkills"], [])
+        self.assertEqual(response.data["education"], [])
+        self.assertEqual(response.data["experience"], [])
+        self.assertEqual(response.data["aeronautical"], [])
+        self.assertEqual(response.data["interests"], [])
+        self.assertEqual(response.data["languages"], [])
+
+    def test_no_related_objects(self):
+        """Test API response when profile exists but has no related objects."""
+        self.profile.name = "Test User"
+        self.profile.save()
+        response = self.client.get("/api/cv/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], "Test User")
+        self.assertEqual(response.data["technicalSkills"], [])
+        self.assertEqual(response.data["education"], [])
+
+    def test_multiple_related_objects_and_ordering(self):
+        """Test API returns multiple objects and respects order."""
+        self.profile.name = "Test User"
+        self.profile.save()
+        Experience.objects.create(profile=self.profile, role="Second", order=2)
+        Experience.objects.create(profile=self.profile, role="First", order=1)
+        response = self.client.get("/api/cv/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["experience"]), 2)
+        self.assertEqual(response.data["experience"][0]["role"], "First")
+        self.assertEqual(response.data["experience"][1]["role"], "Second")
+
+    def test_aeronautical_skill_interest_language_models(self):
+        """Test serialization of AeronauticalSkill, Interest, and Language."""
+        self.profile.name = "Test User"
+        self.profile.save()
+        AeronauticalSkill.objects.create(profile=self.profile, name="PPL", order=1)
+        Interest.objects.create(profile=self.profile, name="Flying", order=1)
+        Language.objects.create(profile=self.profile, name="English", level="Fluent", order=1)
+        response = self.client.get("/api/cv/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["aeronautical"]), 1)
+        self.assertEqual(response.data["aeronautical"][0], "PPL")
+        self.assertEqual(len(response.data["interests"]), 1)
+        self.assertEqual(response.data["interests"][0], "Flying")
+        self.assertEqual(len(response.data["languages"]), 1)
+        self.assertEqual(response.data["languages"][0]["name"], "English")
+
+    def test_skill_without_details(self):
+        """Test that a skill without details is handled correctly."""
+        self.profile.name = "Test User"
+        self.profile.save()
+        cat = SkillCategory.objects.create(profile=self.profile, name="General", order=1)
+        Skill.objects.create(category=cat, name="Communication", order=1)
+        response = self.client.get("/api/cv/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["technicalSkills"][0]["skills"]), 1)
+        self.assertEqual(response.data["technicalSkills"][0]["skills"][0]["details"], "")
+
+    def test_education_with_single_line_details(self):
+        """Test education details with a single line."""
+        self.profile.name = "Test User"
+        self.profile.save()
+        Education.objects.create(profile=self.profile, details="Bachelor's Degree", order=1)
+        response = self.client.get("/api/cv/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["education"]), 1)
+        self.assertEqual(response.data["education"][0]["details"], ["Bachelor's Degree"])
